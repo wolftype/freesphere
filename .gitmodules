@@ -10,3 +10,6 @@
 [submodule "GLV"]
 	path = GLV
 	url = https://github.com/AlloSphere-Research-Group/GLV.git
+[submodule "OmniRender"]
+	path = OmniRender
+	url = https://github.com/younkhg/OmniRender.git
