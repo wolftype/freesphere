@@ -29,30 +29,23 @@ public:
         omren.blendTex(1);
     }
 
-    void onAnimate(double dt){
-
-    }
-
     void onDraw(Graphics& g){
-        float x = 0;
-        float y = 0;
-        float z = 0;
-        float ux = 0;
-        float uy = 0;
-        float uz = 0;
-        float vx = 0;
-        float vy = 0;
-        float vz = 0;
-        float wx = 0;
-        float wy = 0;
-        float wz = 0;
+        // position
+        float x = 0, y = 0, z = 0;
+        // rotation unit vectors
+        float ux = 0, uy = 0, uz = 0;
+        float vx = 0, vy = 0, vz = 0;
+        float wx = 0, wy = 0, wz = 0;
 
         omren.pos(x, y, z);
         omren.dir(ux, uy, uz, vx, vy, vz, wx, wy, wz);
         omren.begin();
-        while (omren.nextFaceExists()) {
-            omren.prepareFace();
-            // draw
+        for (omren.mEye = 0; omren.mEye < omren.stereo; omren.mEye++) {
+            omren.mEyeParallax = omren.mEyeSep * (omren.mEye-0.5);
+            for (omren.mFace = 0; omren.mFace < 6; omren.mFace++) {
+                omren.prepareFace();
+                // draw something
+            }
         }
         omren.end();
         omren.draw();

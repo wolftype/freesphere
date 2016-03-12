@@ -39,8 +39,12 @@ static const char * fCube = R"(
 class OmniCubeRender {
 public:
     int res = 2048;
+    int stereo = 2; // 1 if not, 2 if is
     int mFace = 0;
-    int mCurrentEye = 0;
+    int mEye = 0;
+    float mEyeSep = 0;
+    float position[3];
+    float rotation[9];
     float modelview[16];
     float mSphereRadius; // The radius of the sphere in OpenGL units.
     float mEyeParallax, mNear, mFar;
