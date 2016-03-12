@@ -1,4 +1,4 @@
-#### FREESPHERE #####
+#### FREESPHERE ####
 
 AlloSystem + OmniRender tests
 
