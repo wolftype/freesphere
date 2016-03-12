@@ -13,20 +13,21 @@ int height = 300;
 // assuming that the data is properly loaded by backend of lib
 class Assumption {
 public:
-    GLuint warp_tex;
-    GLuint blend_tex;
+    GLuint warp_tex = 0;
+    GLuint blend_tex = 1;
 };
 
 class MyApp : public App {
 public:
     OmniCubeRender omren;
+    Assumption ass;
 
     void onCreate(const ViewpointWindow& w) {
         omren.resolution(128);
         omren.config("path/to/config/file");
         omren.init();
-        omren.warpTex(0);
-        omren.blendTex(1);
+        omren.warpTex(ass.warp_tex);
+        omren.blendTex(ass.blend_tex);
     }
 
     void onDraw(Graphics& g){
@@ -51,7 +52,6 @@ public:
         omren.draw();
     }
 };
-
 
 int main(){
     MyApp app;
