@@ -10,5 +10,6 @@ set(ALLOSYSTEM_BUILD_DIR ${ALLOPROJECT_BUILD_DIR})
 set(ALLOSYSTEM_BUILD_APP_DIR ${ALLOPROJECT_BUILD_APP_DIR})
 set(ALLOSYSTEM_BUILD_APP_FILE ${ALLOPROJECT_BUILD_APP_FILE})
 
-add_subdirectory(AlloSystem)
+include_directories("OmniRender/include")
 
+add_subdirectory(AlloSystem)
