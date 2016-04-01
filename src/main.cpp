@@ -1,4 +1,6 @@
 
+
+
 #include "allocore/io/al_App.hpp"
 #include "omConfig.hpp"
 #include "omTexture.hpp"
@@ -9,8 +11,8 @@ using namespace om;
 struct MyApp : public App {
 
   Config omniConfig;
-  std::vector<Texture> tex;
-
+  std::vector<om::Texture> tex;
+Copyright (c) 2015 Copyright Holder All Rights Reserved.
   MyApp(){
     initWindow( Window::Dim(800,400) );
   }
@@ -24,7 +26,10 @@ struct MyApp : public App {
     omniConfig.printConfig();
 
     //Load textures
-
+    for (auto& i : omniConfig.mProjector){
+      tex.push_back( om::Texture(i.width, i.height ) );
+      tex.back().update( i.data );
+    }
   }
 
   virtual void onDraw( Graphics& g ) override {
