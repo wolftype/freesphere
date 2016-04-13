@@ -12,7 +12,6 @@ struct MyApp : public App {
 
   Config omniConfig;
   std::vector<om::Texture> tex;
-Copyright (c) 2015 Copyright Holder All Rights Reserved.
   MyApp(){
     initWindow( Window::Dim(800,400) );
   }
