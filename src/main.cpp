@@ -13,7 +13,9 @@ struct MyApp : public App {
 
   Config omniConfig;
   std::vector<om::Texture> tex;
-  om::ShaderProgram shader;
+  om::ShaderProgram captureShader, warpShader;
+  Mesh mesh;
+
   MyApp(){
     initWindow( Window::Dim(800,400) );
   }
@@ -43,8 +45,10 @@ struct MyApp : public App {
     }
 
     //Init shader
-    shader.load("OmniRender/include/omWarp.vert", "OmniRender/include/omWarp.frag");
+    captureShader.load("OmniRender/include/omCapture.vert", "OmniRender/include/omCapture.frag");
+    // warpShader.load("OmniRender/include/omWarp.vert", "OmniRender/include/omWarp.frag");
 
+    addOctahedron(mesh);
   }
 
   /* AFTER LUNCH:
@@ -83,7 +87,31 @@ struct MyApp : public App {
   }
 
   virtual void onDraw( Graphics& g ) override {
-    drawQuad(g);
+    // drawQuad(g);
+
+    glUseProgram(captureShader.program);
+
+    GLint a = glGetUniformLocation(captureShader.program, "omni_eye");
+    GLint b = glGetUniformLocation(captureShader.program, "omni_radius");
+    GLint c = glGetUniformLocation(captureShader.program, "omni_face");
+    GLint d = glGetUniformLocation(captureShader.program, "omni_near");
+    GLint e = glGetUniformLocation(captureShader.program, "omni_far");
+    GLint f = glGetUniformLocation(captureShader.program, "lighting");
+    GLint g2 = glGetUniformLocation(captureShader.program, "texture");
+
+    glUniform1f(a, 0.0);
+    glUniform1f(b, 1e10);
+    glUniform1f(d, 0.01);
+    glUniform1f(e, 100.0);
+    glUniform1f(f, 0.0);
+    glUniform1f(g2, 0.0);
+
+    for (int i = 0; i < 6; i++){
+      glUniform1i(c, i);
+      g.draw(mesh);
+    }
+
+
   }
 
 };
