@@ -20,7 +20,7 @@ struct MyApp : public App {
   Mesh mesh;
 
   MyApp(){
-    initWindow( Window::Dim(800,400) );
+    initWindow( Window::Dim(1024,1024) );
   }
 
   /// OpenGL context exists when onCreate is called
@@ -33,8 +33,9 @@ struct MyApp : public App {
 
     //Set up cube map and fbo
     cubeMap.init(1024);
-    fbo.init(800,400);
+    fbo.init(1024,1024);
     fbo.attach(cubeMap);
+
 
     //Load textures
     for (auto& i : omniConfig.mProjector){
@@ -47,11 +48,16 @@ struct MyApp : public App {
     warpShader.load("OmniRender/include/omWarp.vert", "OmniRender/include/omWarp.frag");
 
     glUseProgram(warpShader.program);
+    
     GLint h = glGetUniformLocation(warpShader.program, "warpMap");
     GLint i = glGetUniformLocation(warpShader.program, "cubeMap");
-    glUniform1i(h, 0);
+    
+    glUniform1i(h, 2);
     glUniform1i(i, 1);
+    
     warpShader.validate();
+
+    glUseProgram(0);
 
     addOctahedron(mesh);
   }
@@ -61,8 +67,8 @@ struct MyApp : public App {
     - draw results
   */
   void drawQuad(Graphics &g) {
-    glEnable(GL_BLEND);
-    glEnable(GL_TEXTURE_2D);
+    // glEnable(GL_BLEND);
+    // glEnable(GL_TEXTURE_2D);
 
     g.pushMatrix(g.PROJECTION);
     g.loadIdentity();
@@ -71,7 +77,7 @@ struct MyApp : public App {
     g.depthMask(0); // write only to color buffer
 
       // QUAD PART
-      // tex.back().bind();
+      tex.back().bind();
       Mesh& m = g.mesh();
       m.reset();
       m.primitive(g.TRIANGLE_STRIP);
@@ -84,7 +90,7 @@ struct MyApp : public App {
         m.texCoord	( 1, 1);
         m.vertex	(1, 1, 0);
       g.draw(m);
-      // tex.back().unbind();
+      tex.back().unbind();
 
     g.depthMask(1);
     g.popMatrix(g.PROJECTION);
@@ -116,26 +122,29 @@ struct MyApp : public App {
       glFramebufferTexture2D( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                               GL_TEXTURE_CUBE_MAP_POSITIVE_X+i, cubeMap.id(), 0);
 
-      // g.pushMatrix();
-        // g.translate(i,0,0);
-        // glColor4f((float)1/i,0,1,1);
-        g.draw(mesh);
-      // g.popMatrix();
+      g.clearColor(Color(0.f));
+      g.clear(g.COLOR_BUFFER_BIT | g.DEPTH_BUFFER_BIT);
+      g.draw(mesh);
     }
     fbo.unbind();
     fbo.checkStatus();
 
 
     // Draw fbo result
-    glActiveTexture(GL_TEXTURE0);
+    glActiveTexture(GL_TEXTURE2);
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, tex.back().id());
+    glDisable(GL_TEXTURE_2D);
 
     glActiveTexture(GL_TEXTURE1);
     glEnable(GL_TEXTURE_CUBE_MAP);
     glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMap.id());
+    glDisable(GL_TEXTURE_CUBE_MAP);
 
     glUseProgram(warpShader.program);
+
+    g.clearColor(Color(0.f));
+    g.clear(g.COLOR_BUFFER_BIT | g.DEPTH_BUFFER_BIT);
 
     drawQuad(g);
 
