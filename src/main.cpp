@@ -136,6 +136,8 @@ struct MyApp : public App {
     glBindTexture(GL_TEXTURE_2D, tex.back().id());
     glDisable(GL_TEXTURE_2D);
 
+    captureShader.uniformTexture2D(tex.back(), "warpMap", 2);
+
     glActiveTexture(GL_TEXTURE1);
     glEnable(GL_TEXTURE_CUBE_MAP);
     glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMap.id());
