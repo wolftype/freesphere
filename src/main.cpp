@@ -47,17 +47,13 @@ struct MyApp : public App {
     captureShader.load("OmniRender/include/omCapture.vert", "OmniRender/include/omCapture.frag", true);
     warpShader.load("OmniRender/include/omWarp.vert", "OmniRender/include/omWarp.frag");
 
-    glUseProgram(warpShader.program);
-    
-    GLint h = glGetUniformLocation(warpShader.program, "warpMap");
-    GLint i = glGetUniformLocation(warpShader.program, "cubeMap");
-    
-    glUniform1i(h, 2);
-    glUniform1i(i, 1);
-    
-    warpShader.validate();
-
-    glUseProgram(0);
+    glUseProgram(warpShader.program); {
+      GLint h = glGetUniformLocation(warpShader.program, "warpMap");
+      GLint i = glGetUniformLocation(warpShader.program, "cubeMap");
+      glUniform1i(h, 2);
+      glUniform1i(i, 1);
+      warpShader.validate();
+    } glUseProgram(0);
 
     addOctahedron(mesh);
   }
@@ -76,25 +72,82 @@ struct MyApp : public App {
     g.loadIdentity();
     g.depthMask(0); // write only to color buffer
 
-      // QUAD PART
-      tex.back().bind();
-      Mesh& m = g.mesh();
-      m.reset();
-      m.primitive(g.TRIANGLE_STRIP);
-        m.texCoord	( 0, 0);
-        m.vertex	(-1, -1, 0);
-        m.texCoord	( 1, 0);
-        m.vertex	(1, -1, 0);
-        m.texCoord	( 0, 1);
-        m.vertex	(-1, 1, 0);
-        m.texCoord	( 1, 1);
-        m.vertex	(1, 1, 0);
-      g.draw(m);
-      tex.back().unbind();
+    Mesh& m = g.mesh();
+    m.reset();
+    m.primitive(g.TRIANGLE_STRIP);
+      m.texCoord	( 0, 0);
+      m.vertex	(-1, -1, 0);
+      m.texCoord	( 1, 0);
+      m.vertex	(1, -1, 0);
+      m.texCoord	( 0, 1);
+      m.vertex	(-1, 1, 0);
+      m.texCoord	( 1, 1);
+      m.vertex	(1, 1, 0);
+    g.draw(m);
 
     g.depthMask(1);
     g.popMatrix(g.PROJECTION);
-    g.popMatrix(g.MODELVIEW);
+    g.popMatrix(g.MODELVIEW);    
+  }
+
+  void drawQuad2() {
+    // native gl2 calls,
+    // but remember we don't have most of these in gl3
+    
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+    glDepthMask(GL_FALSE);
+
+    float vertices[12] = {-1,-1, 0,
+                           1,-1, 0,
+                          -1, 1, 0,
+                           1, 1, 0};
+    float texcoords[8] = {0, 0,
+                          1, 0,
+                          0, 1,
+                          1, 1};
+
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(3, GL_FLOAT, 0, vertices);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glTexCoordPointer(2, GL_FLOAT, 0, texcoords);
+
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+    glDepthMask(GL_TRUE);
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
+
+    // or we can also do something like:
+    // which works almost same in gl2 and gl3
+
+    /*
+      in cpu code, only one line{
+        glDrawArrays(GL_TRIANLGE_STRIP, 0 ,4);
+      }
+      
+      in vertex shader code {
+        vec4 quad_vertices[4] = vec4[4](vec4(-1, -1, 0.5, 1.0),
+                                        vec4( 1, -1, 0.5, 1.0),
+                                        vec4(-1,  1, 0.5, 1.0),
+                                        vec4( 1,  1, 0.5, 1.0));
+        vec2 quad_texcoords[4] = vec2[4](vec2(0, 0),
+                                         vec2(1, 0),
+                                         vec2(0, 1),
+                                         vec2(1, 1));
+        gl_Position = quad_vertices[gl_VertexID];
+        varying_texcoord = quad_texcoords[gl_VertexID];
+      }
+    */
   }
 
   virtual void onDraw( Graphics& g ) override {
@@ -147,8 +200,9 @@ struct MyApp : public App {
 
     g.clearColor(Color(0.f));
     g.clear(g.COLOR_BUFFER_BIT | g.DEPTH_BUFFER_BIT);
-
+    tex.back().bind();
     drawQuad(g);
+    tex.back().unbind();
 
   }
 
