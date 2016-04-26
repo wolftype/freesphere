@@ -7,6 +7,18 @@
 using namespace al;
 using namespace om;
 
+// what needs to be sent to capture shader
+// in alloutil, it's done by omni().uniforms(shader());
+struct CaptureShaderUniforms {
+  int omni_face;
+  float omni_eye;
+  float omni_radius;
+  float omni_near;
+  float omni_far;
+  float lighting;
+  float texture;
+};
+
 struct MyApp : public App {
   Config omniConfig;
   om::FBO fbo;
@@ -174,7 +186,7 @@ struct MyApp : public App {
        (EXCEPT "omni_face") */
 
     captureShader.begin(); {
-      captureShader.uniform1f("omni_eye", 0.0);
+      captureShader.uniform1f("omni_eye", 0.0); // non stereo, for now
       captureShader.uniform1f("omni_radius", 1e10);
       captureShader.uniform1f("omni_near", 0.01);
       captureShader.uniform1f("omni_far", 100.0);
@@ -197,6 +209,10 @@ struct MyApp : public App {
 
           // in practice, this capture shader will be written by user
           // and also bound by user.
+          // [!] OR DO WE WANT USER TO REGISTER HIS/HER SHADER AND
+          // LET THE LIB BIND IT (OMNIRENDER CLASS HAVING POINTER TO USER SHADER)
+          // or we user "CaptureShaderUniforms" struct so user can easily
+          // send the uniforms here (not caring about sending same thing 6 times)
           captureShader.begin(); {
             // below line needs fix: don't make user do this
             // find some way to get it done automatically
