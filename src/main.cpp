@@ -10,13 +10,15 @@ using namespace om;
 // what needs to be sent to capture shader
 // in alloutil, it's done by omni().uniforms(shader());
 struct CaptureShaderUniforms {
-  int omni_face;
+  // constant for 6 faces
   float omni_eye;
   float omni_radius;
   float omni_near;
   float omni_far;
   float lighting;
   float texture;
+  // should change according to face
+  int omni_face;
 };
 
 struct MyApp : public App {
@@ -246,13 +248,15 @@ struct MyApp : public App {
         // g.clearColor(Color(0.f));
         glClearColor(0.0, 0.0, 0.0, 1.0);
         // g.clear(g.COLOR_BUFFER_BIT | g.DEPTH_BUFFER_BIT);
-        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         tex.back().bind(2);
         cubeMap.bind(1);
+        // tex_blend.bind(0);
         // drawQuad(g);
         drawQuad2();
         tex.back().unbind(2);
         cubeMap.unbind(1);
+        // tex_blend.bind(0);
     } warpShader.end();
   }
 
