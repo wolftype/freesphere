@@ -15,8 +15,6 @@ struct CaptureShaderUniforms {
   float omni_radius;
   float omni_near;
   float omni_far;
-  float lighting;
-  float texture;
   // should change according to face
   int omni_face;
 };
@@ -192,39 +190,27 @@ struct MyApp : public App {
       captureShader.uniform1f("omni_radius", 1e10);
       captureShader.uniform1f("omni_near", 0.01);
       captureShader.uniform1f("omni_far", 100.0);
+      
       captureShader.uniform1f("lighting", 0.0);
       captureShader.uniform1f("texture", 0.0);
     } captureShader.end();
 
-    fbo.bind();
-    for (int i = 0; i < 6; i++){
-      // glUniform1i(c, i);
-      glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-                             GL_TEXTURE_CUBE_MAP_POSITIVE_X+i, cubeMap.id(), 0);
+    fbo.bind(); {
+      for (int i = 0; i < 6; i++) {
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+                               GL_TEXTURE_CUBE_MAP_POSITIVE_X+i, cubeMap.id(), 0);
+        glClearColor(0.0, 0.0, 0.0, 1.0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-      // g.clearColor(Color(0.f));
-      glClearColor(0.0, 0.0, 0.0, 1.0);
-      // g.clear(g.COLOR_BUFFER_BIT | g.DEPTH_BUFFER_BIT);
-      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        /* USER CODE STARTS HERE */
+        captureShader.begin(); {
+          captureShader.uniform1i("omni_face", i);
+          g.draw(mesh);
+        } captureShader.end();
+        /* AND ENDS HERE */
 
-      /* USER CODE STARTS HERE */
-
-          // in practice, this capture shader will be written by user
-          // and also bound by user.
-          // [!] OR DO WE WANT USER TO REGISTER HIS/HER SHADER AND
-          // LET THE LIB BIND IT (OMNIRENDER CLASS HAVING POINTER TO USER SHADER)
-          // or we user "CaptureShaderUniforms" struct so user can easily
-          // send the uniforms here (not caring about sending same thing 6 times)
-          captureShader.begin(); {
-            // below line needs fix: don't make user do this
-            // find some way to get it done automatically
-            captureShader.uniform1i("omni_face", i); 
-            g.draw(mesh);
-          } captureShader.end();
-      
-      /* AND ENDS HERE */
-    }
-    fbo.unbind();
+      }
+    } fbo.unbind();
     fbo.checkStatus();
 
     // Draw fbo result
@@ -254,7 +240,7 @@ struct MyApp : public App {
         // tex_blend.bind(0);
         // drawQuad(g);
         drawQuad2();
-        tex.back().unbind(2);
+        tex.back().unbind(2); //warp
         cubeMap.unbind(1);
         // tex_blend.bind(0);
     } warpShader.end();
