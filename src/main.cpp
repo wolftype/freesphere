@@ -1,4 +1,5 @@
 #include "allocore/io/al_App.hpp"
+
 #include "omConfig.hpp"
 #include "omTexture.hpp"
 #include "omShader.hpp"
@@ -66,8 +67,8 @@ struct MyApp : public App {
     // } glUseProgram(0);
 
     warpShader.begin(); {
-      warpShader.uniform1i("warpMap", 2);
-      warpShader.uniform1i("cubeMap", 1);
+      warpShader.uniform1i("warpMap", 1);
+      warpShader.uniform1i("cubeMap", 0);
       warpShader.validate();
     } warpShader.end();
 
@@ -195,23 +196,40 @@ struct MyApp : public App {
       captureShader.uniform1f("texture", 0.0);
     } captureShader.end();
 
-    fbo.bind(); {
-      for (int i = 0; i < 6; i++) {
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-                               GL_TEXTURE_CUBE_MAP_POSITIVE_X+i, cubeMap.id(), 0);
-        glClearColor(0.0, 0.0, 0.0, 1.0);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    fbo.bind();
 
-        /* USER CODE STARTS HERE */
-        captureShader.begin(); {
-          captureShader.uniform1i("omni_face", i);
-          g.draw(mesh);
-        } captureShader.end();
-        /* AND ENDS HERE */
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    glViewport(0, 0, 1024, 1024);
+    for (int i = 0; i < 6; i++){
+      // glUniform1i(c, i);
+      glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+                             GL_TEXTURE_CUBE_MAP_POSITIVE_X+i, cubeMap.id(), 0);
 
-      }
-    } fbo.unbind();
+      // g.clearColor(Color(0.f));
+      glClearColor(0.0, 0.0, 0.0, 1.0);
+      // g.clear(g.COLOR_BUFFER_BIT | g.DEPTH_BUFFER_BIT);
+      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+      /* USER CODE STARTS HERE */
+
+          // in practice, this capture shader will be written by user
+          // and also bound by user.
+          // [!] OR DO WE WANT USER TO REGISTER HIS/HER SHADER AND
+          // LET THE LIB BIND IT (OMNIRENDER CLASS HAVING POINTER TO USER SHADER)
+          // or we user "CaptureShaderUniforms" struct so user can easily
+          // send the uniforms here (not caring about sending same thing 6 times)
+          captureShader.begin(); {
+            // below line needs fix: don't make user do this
+            // find some way to get it done automatically
+            captureShader.uniform1i("omni_face", i); 
+            g.draw(mesh);
+          } captureShader.end();
+      
+      /* AND ENDS HERE */
+    }
+    fbo.unbind();
     fbo.checkStatus();
+    glPopAttrib();
 
     // Draw fbo result
     // glActiveTexture(GL_TEXTURE2);
@@ -235,13 +253,14 @@ struct MyApp : public App {
         glClearColor(0.0, 0.0, 0.0, 1.0);
         // g.clear(g.COLOR_BUFFER_BIT | g.DEPTH_BUFFER_BIT);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        tex.back().bind(2);
-        cubeMap.bind(1);
+        tex.back().bind(1);
+        cubeMap.bind(0);
         // tex_blend.bind(0);
         // drawQuad(g);
         drawQuad2();
-        tex.back().unbind(2); //warp
-        cubeMap.unbind(1);
+
+        tex.back().unbind(1);
+        cubeMap.unbind(0);
         // tex_blend.bind(0);
     } warpShader.end();
   }
