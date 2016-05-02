@@ -22,7 +22,7 @@ struct MyApp : public App {
           .near(0.1)
           .far(1000)
           .eyeSep(0);
-          
+
     addOctahedron(mesh);
   }
 
@@ -49,25 +49,34 @@ struct MyApp : public App {
     render.end();
   }
 
+#define OMNIRENDERBEGIN render.beginNoUserShader(); for (int i = 0; i < render.mStereo + 1; i++) { for (int j = 0; j < 6; j++) { render.faceBeginNoUserShader(i, j);
+#define OMNIRENDEREND render.faceEndNoUserShader(); } } render.endNoUserShader();
+
   void noUserShader(Graphics& g) {
+    // set these before rendering
     render.clearColor(0.0, 0.0, 0.0, 1.0)
           .lighting(0.0)
           .texture(0.0);
 
-    render.beginNoUserShader();
-    for (int i = 0; i < render.mStereo + 1; i++) {
-      for (int j = 0; j < 6; j++) {
-        render.faceBeginNoUserShader(i, j);
+    OMNIRENDERBEGIN
+    // render.beginNoUserShader();
+    // for (int i = 0; i < render.mStereo + 1; i++) {
+    //   for (int j = 0; j < 6; j++) {
+    //     render.faceBeginNoUserShader(i, j);
 
         /* USER CODE STARTS HERE */
         g.draw(mesh);
         /* ENDS HERE */
 
-        render.faceEndNoUserShader();
-      }
-    }
-    render.endNoUserShader();
+    //     render.faceEndNoUserShader();
+    //   }
+    // }
+    // render.endNoUserShader();
+    OMNIRENDEREND
   }
+
+#undef OMNIBEGIN
+#undef OMNIEND
 
   virtual void onDraw( Graphics& g ) override {
     switch (code) {
