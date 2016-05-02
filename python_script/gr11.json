@@ -1,0 +1,41 @@
+{
+  "active": true,
+  "fullscreen": true,
+  "resolution": 2048,
+  "projections": [
+    {
+      "blend": {
+        "file": "alpha19.png"
+      },
+      "params": {
+        "file": "proj19.bin"
+      },
+      "viewport": {
+        "b": 0,
+        "h": 1,
+        "l": 0,
+        "w": 0.5
+      },
+      "warp": {
+        "file": "map3D19.bin"
+      }
+    },
+    {
+      "blend": {
+        "file": "alpha18.png"
+      },
+      "params": {
+        "file": "proj18.bin"
+      },
+      "viewport": {
+        "b": 0,
+        "h": 1,
+        "l": 0.5,
+        "w": 0.5
+      },
+      "warp": {
+        "file": "map3D18.bin"
+      }
+    }
+  ]
+}
