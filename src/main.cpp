@@ -54,6 +54,7 @@ struct MyApp : public App {
 
   void noUserShader(Graphics& g) {
     // set these before rendering
+    // MAYBE IN SOME OTHER WAY?
     render.clearColor(0.0, 0.0, 0.0, 1.0)
           .lighting(0.0)
           .texture(0.0);

@@ -1,3 +1,6 @@
+# Python 2.7
+# tested with OSX built in Python
+
 from __future__ import print_function
 import sys
 import json
