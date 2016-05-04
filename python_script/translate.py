@@ -38,5 +38,5 @@ for i in range(num_projections):
     t += "w " + str(w[i]) + "\n"
     t += "active " + str(active) + "\n\n"
 
-r = open("gr" + str(i) + ".txt", 'w')
+r = open("gr" + str(pid) + ".txt", 'w')
 r.write(t)

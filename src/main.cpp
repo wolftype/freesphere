@@ -49,52 +49,33 @@ struct MyApp : public App {
     render.end();
   }
 
-  void noUserShader(Graphics& g) {
+  void renderDefault(Graphics& g) {
     // set these before rendering
     // MAYBE IN SOME OTHER WAY?
     render.clearColor(0.0, 0.0, 0.0, 1.0)
           .lighting(0.0)
           .texture(0.0);
 
-    render.beginNoUserShader();
+    render.beginDefault();
     for (int i = 0; i < render.mStereo + 1; i++) {
       for (int j = 0; j < 6; j++) {
-        render.faceBeginNoUserShader(i, j);
+        render.faceBeginDefault(i, j);
 
         /* USER CODE STARTS HERE */
         g.draw(mesh);
         /* ENDS HERE */
 
-        render.faceEndNoUserShader();
+        render.faceEndDefault();
       }
     }
-    render.endNoUserShader();
+    render.endDefault();
 
   }
-
-#define OMNIRENDERBEGIN render.beginNoUserShader(); for (int i = 0; i < render.mStereo + 1; i++) { for (int j = 0; j < 6; j++) { render.faceBeginNoUserShader(i, j);
-#define OMNIRENDEREND render.faceEndNoUserShader(); } } render.endNoUserShader();
-
-  void noUserShaderMacro(Graphics& g) {
-    render.clearColor(0.0, 0.0, 0.0, 1.0)
-          .lighting(0.0)
-          .texture(0.0);
-
-    OMNIRENDERBEGIN
-
-    g.draw(mesh);
-
-    OMNIRENDEREND
-  }
-
-#undef OMNIBEGIN
-#undef OMNIEND
 
   virtual void onDraw( Graphics& g ) override {
     switch (code) {
       case 1: rawWorkFlow(g); break;
-      case 2: noUserShader(g); break;
-      case 3: noUserShaderMacro(g); break;
+      case 2: renderDefault(g); break;
     }
   }
 
