@@ -10,7 +10,12 @@ struct MyApp : public App {
   Mesh mesh;
 
   MyApp(){
-    initWindow( Window::Dim(1024,1024) );
+    /// User MUST set window buffer to support Active stereo
+    /// This isn't necessary for sequential, anaglyph, etc
+    initWindow( Window::Dim(1024,1024),
+                "Freesphere 1.0",
+                60,
+                Window::DEFAULT_BUF);
   }
 
   /// OpenGL context exists when onCreate is called
@@ -21,30 +26,41 @@ struct MyApp : public App {
     render.radius(1e10)
           .near(0.1)
           .far(1000)
-          .eyeSep(0);
+          .eyeSep(.1)
+          .stereo(1); //stereo mode
+
+    /// If active stereo flag is found in config file, set each window buffer type to stereo
+    if (render.config.mProjector[0].active) {
+      for (auto& i : windows()) {
+        i->displayMode(i->displayMode() | Window::STEREO_BUF);
+      }
+    }
 
     addOctahedron(mesh);
   }
 
   void rawWorkFlow(Graphics& g) {
     render.begin();
-    for (int i = 0; i < 6; i++){
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-                               GL_TEXTURE_CUBE_MAP_POSITIVE_X+i,
-                               render.cubeMap.id(), 0);
-        glClearColor(0.0, 0.0, 0.0, 1.0);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    for (int i = 0; i < render.isStereo() + 1; i++) {
+      for (int j = 0; j < 6; j++){
+          glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+                                 GL_TEXTURE_CUBE_MAP_POSITIVE_X+j,
+                                 render.cubeMap[i].id(), 0);
+          glClearColor(0.0, 0.0, 0.0, 1.0);
+          glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+          float parallax = render.mEyeSep * (i - 0.5 * render.isStereo());
 
-        /* USER CODE STARTS HERE */
-        render.captureShader.begin(); {
-            render.captureShader.uniform1i("omni_face", i);
-            render.captureShader.uniform1f("omni_eye", 0);
-            render.captureShader.uniform1f("lighting", 0.0);
-            render.captureShader.uniform1f("texture", 0.0);
-            g.draw(mesh);
-        } render.captureShader.end();
+          /* USER CODE STARTS HERE */
+          render.captureShader.begin(); {
+              render.captureShader.uniform1i("omni_face", j);
+              render.captureShader.uniform1f("omni_eye", parallax);
+              render.captureShader.uniform1f("lighting", 0.0);
+              render.captureShader.uniform1f("texture", 0.0);
+              g.draw(mesh);
+          } render.captureShader.end();
 
-        /* AND ENDS HERE */
+          /* AND ENDS HERE */
+      }
     }
     render.end();
   }
@@ -57,7 +73,7 @@ struct MyApp : public App {
           .texture(0.0);
 
     render.beginDefault();
-    for (int i = 0; i < render.mStereo + 1; i++) {
+    for (int i = 0; i < render.isStereo() + 1; i++) {
       for (int j = 0; j < 6; j++) {
         render.faceBeginDefault(i, j);
 
@@ -78,6 +94,12 @@ struct MyApp : public App {
       case 2: renderDefault(g); break;
     }
   }
+
+  /// @TODO: think about maintaining aspect ratio
+  virtual void onResize(const ViewpointWindow& win, int w, int h) override {
+    render.resize(w, h);
+  }
+
 
   virtual void onKeyDown(const Keyboard& k) override {
     if ('0' < k.key() && k.key() <= '9') {
