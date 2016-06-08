@@ -43,23 +43,23 @@ struct MyApp : public App {
     render.begin();
     for (int i = 0; i < render.isStereo() + 1; i++) {
       for (int j = 0; j < 6; j++){
-          glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-                                 GL_TEXTURE_CUBE_MAP_POSITIVE_X+j,
-                                 render.cubeMap[i].id(), 0);
-          glClearColor(0.0, 0.0, 0.0, 1.0);
-          glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-          float parallax = render.mEyeSep * (i - 0.5 * render.isStereo());
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+                               GL_TEXTURE_CUBE_MAP_POSITIVE_X+j,
+                               render.cubeMap[i].id(), 0);
+        glClearColor(0.0, 0.0, 0.0, 1.0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        float parallax = render.mEyeSep * (i - 0.5 * render.isStereo());
 
-          /* USER CODE STARTS HERE */
-          render.captureShader.begin(); {
-              render.captureShader.uniform1i("omni_face", j);
-              render.captureShader.uniform1f("omni_eye", parallax);
-              render.captureShader.uniform1f("lighting", 0.0);
-              render.captureShader.uniform1f("texture", 0.0);
-              g.draw(mesh);
-          } render.captureShader.end();
+        /* USER CODE STARTS HERE */
+        render.captureShader.begin(); {
+          render.captureShader.uniform1i("omni_face", j);
+          render.captureShader.uniform1f("omni_eye", parallax);
+          render.captureShader.uniform1f("lighting", 0.0);
+          render.captureShader.uniform1f("texture", 0.0);
+          g.draw(mesh);
+        } render.captureShader.end();
 
-          /* AND ENDS HERE */
+        /* AND ENDS HERE */
       }
     }
     render.end();
