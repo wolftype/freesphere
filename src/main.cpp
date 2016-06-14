@@ -9,10 +9,10 @@ struct MyApp : public App {
   int code = 1;
 
   Mesh meshPlatonic[3];
-  MeshVBO shapesVBO;
-  int numShapes = 1000;
-	float scatterDistance = 10.0;
-  float scatterSize = .45;
+ //  MeshVBO shapesVBO;
+ //  int numShapes = 1000;
+	// float scatterDistance = 10.0;
+ //  float scatterSize = .45;
 
   MyApp(){
     /// User MUST set window buffer to support Active stereo
@@ -25,34 +25,34 @@ struct MyApp : public App {
     window().fullScreen(true);
   }
 
-  // Fill a mesh with different platonic solids
-  void scatterShapes(MeshVBO& vbo){
-    for(int i=0; i<numShapes; ++i){
-      int Nv = rnd::prob(0.5)
-            ? (rnd::prob(0.5) ? addCube(vbo) : addDodecahedron(vbo))
-            : addIcosahedron(vbo);
+  // // Fill a mesh with different platonic solids
+  // void scatterShapes(MeshVBO& vbo){
+  //   for(int i=0; i<numShapes; ++i){
+  //     int Nv = rnd::prob(0.5)
+  //           ? (rnd::prob(0.5) ? addCube(vbo) : addDodecahedron(vbo))
+  //           : addIcosahedron(vbo);
 
-      // Scale and translate the newly added shape
-      Mat4f xfm;
-      xfm.setIdentity();
-      xfm.scale(Vec3f(rnd::uniform(1.,0.1) * scatterSize, rnd::uniform(1.,0.1) * scatterSize, rnd::uniform(1.,0.1) * scatterSize));
-      xfm.translate(Vec3f(rnd::uniformS(scatterDistance), rnd::uniformS(scatterDistance), rnd::uniformS(scatterDistance)));
-      vbo.transform(xfm, vbo.vertices().size()-Nv);
+  //     // Scale and translate the newly added shape
+  //     Mat4f xfm;
+  //     xfm.setIdentity();
+  //     xfm.scale(Vec3f(rnd::uniform(1.,0.1) * scatterSize, rnd::uniform(1.,0.1) * scatterSize, rnd::uniform(1.,0.1) * scatterSize));
+  //     xfm.translate(Vec3f(rnd::uniformS(scatterDistance), rnd::uniformS(scatterDistance), rnd::uniformS(scatterDistance)));
+  //     vbo.transform(xfm, vbo.vertices().size()-Nv);
 
-      // Color shapes randomly
-      Color randc = Color(rnd::uniform(), rnd::uniform(), rnd::uniform(0.75,1.0));
-      for(int i=0; i<Nv; ++i){
-        vbo.color(randc);
-      }
-    }
+  //     // Color shapes randomly
+  //     Color randc = Color(rnd::uniform(), rnd::uniform(), rnd::uniform(0.75,1.0));
+  //     for(int i=0; i<Nv; ++i){
+  //       vbo.color(randc);
+  //     }
+  //   }
 
-    // Convert to non-indexed triangles to get flat shading
-    vbo.decompress();
-    vbo.generateNormals();
+  //   // Convert to non-indexed triangles to get flat shading
+  //   vbo.decompress();
+  //   vbo.generateNormals();
 
-    // Update the VBO after all calculations are completed
-    vbo.update();
-  }
+  //   // Update the VBO after all calculations are completed
+  //   vbo.update();
+  // }
 
   /// OpenGL context exists when onCreate is called
   virtual void onCreate( const ViewpointWindow& w ) override {
@@ -108,9 +108,8 @@ struct MyApp : public App {
     }
 
     // Bunch of shapes all over
-    scatterShapes(shapesVBO);
-    shapesVBO.print();
-  
+    // scatterShapes(shapesVBO);
+    // shapesVBO.print();
   }
 
 
@@ -133,7 +132,7 @@ struct MyApp : public App {
           render.captureShader.uniform1f("lighting", 0.0);
           render.captureShader.uniform1f("texture", 0.0);
           for (int i=0; i<3; i++) g.draw(meshPlatonic[i]);
-          g.draw(shapesVBO);
+          // g.draw(shapesVBO);
         } render.captureShader.end();
 
         /* AND ENDS HERE */
@@ -158,7 +157,7 @@ struct MyApp : public App {
 
         /* USER CODE STARTS HERE */
         for (int i=0; i<3; i++) g.draw(meshPlatonic[i]);
-        g.draw(shapesVBO);
+        // g.draw(shapesVBO);
         /* ENDS HERE */
 
         render.faceEndDefault();
