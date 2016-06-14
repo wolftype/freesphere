@@ -12,7 +12,7 @@ struct MyApp : public App {
   MyApp(){
     /// User MUST set window buffer to support Active stereo
     /// This isn't necessary for sequential, anaglyph, etc
-    initWindow( Window::Dim(1024,1024),
+    initWindow( Window::Dim(600,400),
                 "Freesphere 1.0",
                 60,
                 Window::DEFAULT_BUF);
@@ -22,7 +22,7 @@ struct MyApp : public App {
   virtual void onCreate( const ViewpointWindow& w ) override {
     // initialize om::render
     render.init("OmniRender/configFiles/projectorConfigurationTemplate.txt", "tmp");
-    render.resize(1024, 1024);
+    render.resize(600, 400);
     render.radius(1e10)
           .near(0.1)
           .far(1000)
@@ -35,11 +35,14 @@ struct MyApp : public App {
         i->displayMode(i->displayMode() | Window::STEREO_BUF);
       }
     }
-
-    addOctahedron(mesh);
+    addCube(mesh);
+    //addSphere(mesh, 100, 100);
+    //mesh.scale( .3,.3,.3);
+    //mesh.primitive
   }
 
   void rawWorkFlow(Graphics& g) {
+
     render.begin();
     for (int i = 0; i < render.isStereo() + 1; i++) {
       for (int j = 0; j < 6; j++){
@@ -62,7 +65,9 @@ struct MyApp : public App {
         /* AND ENDS HERE */
       }
     }
+    //g.polygonMode( Graphics::FILL );
     render.end();
+
   }
 
   void renderDefault(Graphics& g) {
@@ -75,10 +80,11 @@ struct MyApp : public App {
     render.beginDefault();
     for (int i = 0; i < render.isStereo() + 1; i++) {
       for (int j = 0; j < 6; j++) {
-        render.faceBeginDefault(i, j);
+        render.faceBeginDefault(0, j);
 
         /* USER CODE STARTS HERE */
-        g.draw(mesh);
+        //mesh.color(j<3?1:0,1-j/6.0, j/6.0,1);
+      //  g.draw(mesh);
         /* ENDS HERE */
 
         render.faceEndDefault();
@@ -89,10 +95,11 @@ struct MyApp : public App {
   }
 
   virtual void onDraw( Graphics& g ) override {
-    switch (code) {
-      case 1: rawWorkFlow(g); break;
-      case 2: renderDefault(g); break;
-    }
+      rawWorkFlow(g);
+  //  switch (code) {
+    //  case 1: rawWorkFlow(g); break;
+    //  case 2: renderDefault(g); break;
+  //  }
   }
 
   /// @TODO: think about maintaining aspect ratio
@@ -111,6 +118,13 @@ struct MyApp : public App {
 
 int main(){
   MyApp app;
+
+  char hostname[1000];
+  gethostname(hostname, 1000); 
+
+  std::cout << "HOSTNAME " << hostname << std::endl;
+
+
   app.start();
   return 0;
 }
