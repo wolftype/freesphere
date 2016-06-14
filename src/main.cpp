@@ -20,8 +20,17 @@ struct MyApp : public App {
 
   /// OpenGL context exists when onCreate is called
   virtual void onCreate( const ViewpointWindow& w ) override {
-    // initialize om::render
-    render.init("OmniRender/configFiles/projectorConfigurationTemplate.txt", "tmp");
+    // initialize om::render "tmp" doesn't get used!
+
+    // Determine hostname:
+       char hostname[1000];
+       gethostname(hostname, 1000); 
+       std::cout << "HOSTNAME " << hostname << std::endl;
+    //
+   // render.init("OmniRender/configFiles/projectorConfigurationTemplat.txt", "tmp");
+    // This should depend on whether we are on a laptop
+    std::string cf = "/home/sphere/calibration-current/" + std::string(hostname) + ".txt"; 
+    render.init(cf);
     render.resize(600, 400);
     render.radius(1e10)
           .near(0.1)
@@ -119,10 +128,6 @@ struct MyApp : public App {
 int main(){
   MyApp app;
 
-  char hostname[1000];
-  gethostname(hostname, 1000); 
-
-  std::cout << "HOSTNAME " << hostname << std::endl;
 
 
   app.start();
