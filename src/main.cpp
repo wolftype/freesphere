@@ -58,12 +58,20 @@ struct MyApp : public App {
   virtual void onCreate( const ViewpointWindow& w ) override {
     // initialize om::render "tmp" doesn't get used!
 
+      static bool bFirstTime = true;
+
+      if (bFirstTime){
+        bFirstTime = false;
+      }
+      else {
+        return;
+      }
+
     // Determine hostname:
        char hostname[1000];
        gethostname(hostname, 1000); 
        std::cout << "HOSTNAME " << hostname << std::endl;
-    //
-   // render.init("OmniRender/configFiles/projectorConfigurationTemplate.txt");
+    //  render.init("OmniRender/configFiles/projectorConfigurationTemplate.txt");
     // // This should depend on whether we are on a laptop
     std::string cf = "/home/sphere/calibration-current/" + std::string(hostname) + ".txt"; 
     render.init(cf);
@@ -102,6 +110,7 @@ struct MyApp : public App {
     // Bunch of shapes all over
     scatterShapes(shapesVBO);
     shapesVBO.print();
+  
   }
 
 
