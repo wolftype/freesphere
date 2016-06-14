@@ -8,8 +8,15 @@ import json
 print(sys.version)
 print("translation app")
 
-pid = 11
-j = json.loads(open("gr" + str(pid) + ".json", 'r').read())
+large_width = 1920
+large_height = 1200
+small_width = 1400
+small_height = 1050
+
+sphere_filepath = "~/calibration-current/"
+
+mid = 11 # machine id
+j = json.loads(open("gr" + str(mid) + ".json", 'r').read())
 
 active = 1 if j["active"] else 0
 print("active: " + str(active))
@@ -23,20 +30,32 @@ h = [0] * num_projections
 l = [0] * num_projections
 w = [0] * num_projections
 
+pid = [0] * num_projections # projector id
+
 for i in range(num_projections):
     b[i] = projections[i]["viewport"]["b"]
     h[i] = projections[i]["viewport"]["h"]
     l[i] = projections[i]["viewport"]["l"]
     w[i] = projections[i]["viewport"]["w"]
+    pid[i] = projections[i]["blend"]["file"][5:-4]
+
 
 t = ""
 for i in range(num_projections):
-    t += "id " + str(pid) + "\n"
+    t += "id " + str(pid[i]) + "\n"
+    t += "filepath " + sphere_filepath + "proj" + str(pid[i]) + ".bin" + "\n"
+    if (pid[i] == 9 or pid[i] == 10 or pid[i] == 11 or pid[i] == 12):
+        t += "width " + str(large_width) + "\n"
+        t += "height " + str(large_height) + "\n"
+    else:
+        t += "width " + str(small_width) + "\n"
+        t += "height " + str(small_height) + "\n"
     t += "b " + str(b[i]) + "\n"
     t += "h " + str(h[i]) + "\n"
     t += "l " + str(l[i]) + "\n"
     t += "w " + str(w[i]) + "\n"
-    t += "active " + str(active) + "\n\n"
+    t += "active " + str(active) + "\n"
+    t += "\n"
 
-r = open("gr" + str(pid) + ".txt", 'w')
+r = open("gr" + str(mid) + ".txt", 'w')
 r.write(t)
