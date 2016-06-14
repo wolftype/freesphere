@@ -63,10 +63,10 @@ struct MyApp : public App {
        gethostname(hostname, 1000); 
        std::cout << "HOSTNAME " << hostname << std::endl;
     //
-   render.init("OmniRender/configFiles/projectorConfigurationTemplate.txt");
+   // render.init("OmniRender/configFiles/projectorConfigurationTemplate.txt");
     // // This should depend on whether we are on a laptop
-    // std::string cf = "/home/sphere/calibration-current/" + std::string(hostname) + ".txt"; 
-    // render.init(cf);
+    std::string cf = "/home/sphere/calibration-current/" + std::string(hostname) + ".txt"; 
+    render.init(cf);
     // render.resize(600, 400);
     render.radius(1e10)
           .near(0.1)
