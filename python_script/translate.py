@@ -13,10 +13,12 @@ large_height = 1200
 small_width = 1400
 small_height = 1050
 
-sphere_filepath = "~/calibration-current/"
+# no tilda for c++!
+# sphere_filepath = "~/calibration-current/"
+sphere_filepath = "/home/sphere/calibration-current/"
 
-mid = 11 # machine id
-j = json.loads(open("gr" + str(mid) + ".json", 'r').read())
+mid = "14" # machine id
+j = json.loads(open("gr" + mid + ".json", 'r').read())
 
 active = 1 if j["active"] else 0
 print("active: " + str(active))
