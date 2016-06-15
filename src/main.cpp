@@ -7,23 +7,81 @@ using namespace al;
 struct MyApp : public App {
   om::Render render;
   int code = 1;
-  Mesh mesh;
+
+  Mesh meshPlatonic[3];
+ //  MeshVBO shapesVBO;
+ //  int numShapes = 1000;
+	// float scatterDistance = 10.0;
+ //  float scatterSize = .45;
 
   MyApp(){
     /// User MUST set window buffer to support Active stereo
     /// This isn't necessary for sequential, anaglyph, etc
-    initWindow( Window::Dim(1024,1024),
+    initWindow( Window::Dim(600,400),
                 "Freesphere 1.0",
                 60,
                 Window::DEFAULT_BUF);
+
+    window().fullScreen(true);
   }
+
+  // // Fill a mesh with different platonic solids
+  // void scatterShapes(MeshVBO& vbo){
+  //   for(int i=0; i<numShapes; ++i){
+  //     int Nv = rnd::prob(0.5)
+  //           ? (rnd::prob(0.5) ? addCube(vbo) : addDodecahedron(vbo))
+  //           : addIcosahedron(vbo);
+
+  //     // Scale and translate the newly added shape
+  //     Mat4f xfm;
+  //     xfm.setIdentity();
+  //     xfm.scale(Vec3f(rnd::uniform(1.,0.1) * scatterSize, rnd::uniform(1.,0.1) * scatterSize, rnd::uniform(1.,0.1) * scatterSize));
+  //     xfm.translate(Vec3f(rnd::uniformS(scatterDistance), rnd::uniformS(scatterDistance), rnd::uniformS(scatterDistance)));
+  //     vbo.transform(xfm, vbo.vertices().size()-Nv);
+
+  //     // Color shapes randomly
+  //     Color randc = Color(rnd::uniform(), rnd::uniform(), rnd::uniform(0.75,1.0));
+  //     for(int i=0; i<Nv; ++i){
+  //       vbo.color(randc);
+  //     }
+  //   }
+
+  //   // Convert to non-indexed triangles to get flat shading
+  //   vbo.decompress();
+  //   vbo.generateNormals();
+
+  //   // Update the VBO after all calculations are completed
+  //   vbo.update();
+  // }
 
   /// OpenGL context exists when onCreate is called
   virtual void onCreate( const ViewpointWindow& w ) override {
-    // initialize om::render
-    render.init("OmniRender/configFiles/projectorConfigurationTemplate.txt", "tmp");
-    render.resize(1024, 1024);
-    render.radius(1e10)
+    // initialize om::render "tmp" doesn't get used!
+
+//      static bool bFirstTime = true;
+//
+//      if (bFirstTime){
+//        bFirstTime = false;
+//      }
+//      else {
+//        return;
+//      }
+
+    // Determine hostname:
+       char hostname[1000];
+       gethostname(hostname, 1000);
+       auto hoststring = std::string(hostname);
+
+       std::cout << "HOSTNAME " << hostname << std::endl;
+
+       if ( hoststring.substr(0,2) == "gr" ){
+        std::string cf = "/home/sphere/calibration-current/" + std::string(hostname) + ".txt";
+        render.init(cf);
+       } else {
+        render.init("OmniRender/configFiles/projectorConfigurationTemplate.txt");
+       }
+       // render.resize(600, 400);
+       render.radius(1e10)
           .near(0.1)
           .far(1000)
           .eyeSep(.1)
@@ -36,10 +94,32 @@ struct MyApp : public App {
       }
     }
 
-    addOctahedron(mesh);
+    // Basic shapes in the middle
+    addTetrahedron(meshPlatonic[0]);
+    addCube(meshPlatonic[1]);
+    addSphere(meshPlatonic[2]);
+
+    for (int i = 0; i < 3; i++){
+      Mat4f xfm;
+      xfm.setIdentity();
+      if (i == 0) xfm.translate(Vec3f(-2, 0, 0));
+      if (i == 2) xfm.translate(Vec3f(2, 0, 0));
+      meshPlatonic[i].transform(xfm);
+      for (int j = 0; j < meshPlatonic[i].vertices().size(); j++){
+        if (i == 0) meshPlatonic[i].color(1.0, 0.0, 0.0);
+        if (i == 1) meshPlatonic[i].color(0.0, 1.0, 0.0);
+        if (i == 2) meshPlatonic[i].color(0.0, 0.0, 1.0);
+      }
+    }
+
+    // Bunch of shapes all over
+    // scatterShapes(shapesVBO);
+    // shapesVBO.print();
   }
 
+
   void rawWorkFlow(Graphics& g) {
+
     render.begin();
     for (int i = 0; i < render.isStereo() + 1; i++) {
       for (int j = 0; j < 6; j++){
@@ -56,13 +136,16 @@ struct MyApp : public App {
           render.captureShader.uniform1f("omni_eye", parallax);
           render.captureShader.uniform1f("lighting", 0.0);
           render.captureShader.uniform1f("texture", 0.0);
-          g.draw(mesh);
+          for (int i=0; i<3; i++) g.draw(meshPlatonic[i]);
+          // g.draw(shapesVBO);
         } render.captureShader.end();
 
         /* AND ENDS HERE */
       }
     }
+    //g.polygonMode( Graphics::FILL );
     render.end();
+
   }
 
   void renderDefault(Graphics& g) {
@@ -75,10 +158,11 @@ struct MyApp : public App {
     render.beginDefault();
     for (int i = 0; i < render.isStereo() + 1; i++) {
       for (int j = 0; j < 6; j++) {
-        render.faceBeginDefault(i, j);
+        render.faceBeginDefault(0, j);
 
         /* USER CODE STARTS HERE */
-        g.draw(mesh);
+        for (int i=0; i<3; i++) g.draw(meshPlatonic[i]);
+        // g.draw(shapesVBO);
         /* ENDS HERE */
 
         render.faceEndDefault();
@@ -89,10 +173,11 @@ struct MyApp : public App {
   }
 
   virtual void onDraw( Graphics& g ) override {
-    switch (code) {
-      case 1: rawWorkFlow(g); break;
-      case 2: renderDefault(g); break;
-    }
+      rawWorkFlow(g);
+  //  switch (code) {
+    //  case 1: rawWorkFlow(g); break;
+    //  case 2: renderDefault(g); break;
+  //  }
   }
 
   /// @TODO: think about maintaining aspect ratio
@@ -111,6 +196,9 @@ struct MyApp : public App {
 
 int main(){
   MyApp app;
+
+
+
   app.start();
   return 0;
 }
