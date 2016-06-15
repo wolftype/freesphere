@@ -58,14 +58,14 @@ struct MyApp : public App {
   virtual void onCreate( const ViewpointWindow& w ) override {
     // initialize om::render "tmp" doesn't get used!
 
-      static bool bFirstTime = true;
-
-      if (bFirstTime){
-        bFirstTime = false;
-      }
-      else {
-        return;
-      }
+//      static bool bFirstTime = true;
+//
+//      if (bFirstTime){
+//        bFirstTime = false;
+//      }
+//      else {
+//        return;
+//      }
 
     // Determine hostname:
        char hostname[1000];
