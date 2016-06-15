@@ -70,13 +70,18 @@ struct MyApp : public App {
     // Determine hostname:
        char hostname[1000];
        gethostname(hostname, 1000); 
+       auto hoststring = std::string(hostname);
+
        std::cout << "HOSTNAME " << hostname << std::endl;
-    //  render.init("OmniRender/configFiles/projectorConfigurationTemplate.txt");
-    // // This should depend on whether we are on a laptop
-    std::string cf = "/home/sphere/calibration-current/" + std::string(hostname) + ".txt"; 
-    render.init(cf);
-    // render.resize(600, 400);
-    render.radius(1e10)
+
+       if ( hoststring.substr(0,2) == "gr" ){
+        std::string cf = "/home/sphere/calibration-current/" + std::string(hostname) + ".txt"; 
+        render.init(cf);
+       } else {
+        render.init("OmniRender/configFiles/projectorConfigurationTemplate.txt");
+       }
+       // render.resize(600, 400);
+       render.radius(1e10)
           .near(0.1)
           .far(1000)
           .eyeSep(.1)
