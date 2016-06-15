@@ -20,9 +20,12 @@ struct MyApp : public App {
     initWindow( Window::Dim(600,400),
                 "Freesphere 1.0",
                 60,
-                Window::DEFAULT_BUF);
+                // Window::DEFAULT_BUF);
+                Window::DEFAULT_BUF | Window::STEREO_BUF);
 
     std::cout << "windows().size() (contructor): " << windows().size() << std::endl;
+
+
 
     window().fullScreen(true);
   }
@@ -93,7 +96,7 @@ struct MyApp : public App {
           .far(1000)
           .eyeSep(.1)
           .stereo(1); //stereo mode
-
+/*
     /// If active stereo flag is found in config file, set each window buffer type to stereo
     if (render.config.mProjector[0].active) {
       for (auto& i : windows()) {
@@ -122,6 +125,7 @@ struct MyApp : public App {
     // Bunch of shapes all over
     // scatterShapes(shapesVBO);
     // shapesVBO.print();
+    */
   }
 
 
@@ -203,9 +207,6 @@ struct MyApp : public App {
 
 int main(){
   MyApp app;
-
-
-
   app.start();
   return 0;
 }
