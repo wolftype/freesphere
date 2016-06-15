@@ -22,6 +22,8 @@ struct MyApp : public App {
                 60,
                 Window::DEFAULT_BUF);
 
+    std::cout << "windows().size() (contructor): " << windows().size() << std::endl;
+
     window().fullScreen(true);
   }
 
@@ -56,6 +58,11 @@ struct MyApp : public App {
 
   /// OpenGL context exists when onCreate is called
   virtual void onCreate( const ViewpointWindow& w ) override {
+    std::cout << "windows().size() (onCreate): " << windows().size() << std::endl;
+
+    static int call_count = 0;
+    std::cout << "call #" << call_count << std::endl;
+    call_count++;
     // initialize om::render "tmp" doesn't get used!
 
 //      static bool bFirstTime = true;
