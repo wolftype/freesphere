@@ -11,6 +11,8 @@
 #include "alloutil/al_OmniStereo.hpp"
 #include "alloutil/al_Simulator.hpp"  // DEVICE_SERVER_PORT_CONNECTION_US
 
+#include <iostream>
+
 namespace al {
 
 class SphereRenderer : public Window,
@@ -82,6 +84,7 @@ inline void SphereRenderer::start() {
   create();
 
   if (mOmni.fullScreen()) {
+    std::cout << "FULL SCREEN" << std::endl;
     fullScreen(true);
     cursorHide(true);
   }
