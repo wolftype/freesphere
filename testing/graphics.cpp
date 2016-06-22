@@ -5,6 +5,18 @@
 
 #include "Cuttlebone/Cuttlebone.hpp"
 
+#if defined AL_OSX
+	#include <GLUT/glut.h>
+
+#elif defined AL_LINUX
+	#include <GL/glew.h>
+	#include <GL/glut.h>
+
+#elif defined AL_WINDOWS
+	#include <GL/wglew.h> // wglSwapInterval
+	#include <GL/glut.h>
+#endif
+
 #include <iostream>
 
 using namespace al;
@@ -26,6 +38,10 @@ public:
 		render.resize(width(), height());
 		cout << "width: " << width() << ", "
 		     << "height: " << height() << endl;
+		cout << "glut win width: " << glutGet(GLUT_WINDOW_WIDTH) << ", "
+		     << "glut win height: " << glutGet(GLUT_WINDOW_HEIGHT) << endl;
+		cout << "glut screen width: " << glutGet(GLUT_SCREEN_WIDTH) << ", "
+		     << "glut screen height: " << glutGet(GLUT_SCREEN_HEIGHT) << endl;
 		render.radius(1e10)
 		      .near(0.1)
 		      .far(1000)
