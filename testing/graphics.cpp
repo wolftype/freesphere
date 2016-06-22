@@ -24,6 +24,8 @@ public:
 
 		render.init(configPath());
 		render.resize(width(), height());
+		cout << "width: " << width() << ", "
+		     << "height: " << height() << endl;
 		render.radius(1e10)
 		      .near(0.1)
 		      .far(1000)
