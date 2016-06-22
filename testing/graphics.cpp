@@ -35,7 +35,7 @@ public:
 		cout << "configPath: " << configPath() << endl;
 
 		render.init(configPath());
-		render.resize(width(), height());
+		render.resize(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
 		cout << "width: " << width() << ", "
 		     << "height: " << height() << endl;
 		cout << "glut win width: " << glutGet(GLUT_WINDOW_WIDTH) << ", "
