@@ -84,9 +84,12 @@ inline void SphereRenderer::start() {
   create();
 
   if (mOmni.fullScreen()) {
-    std::cout << "FULL SCREEN" << std::endl;
+    std::cout << "!!! FULL SCREEN !!!" << std::endl;
     fullScreen(true);
     cursorHide(true);
+  }
+  else {
+    std::cout << "!!! NOT FULLSCREEN !!!" << std::endl;
   }
 
   Main::get().start();
