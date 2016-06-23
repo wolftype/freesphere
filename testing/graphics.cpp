@@ -2,7 +2,6 @@
 #include "SphereRenderer.hpp"
 
 #include "omRender.hpp"
-
 #include "Cuttlebone/Cuttlebone.hpp"
 
 #include <iostream>
@@ -25,11 +24,12 @@ public:
 
 		std::cout << "window class says," << std::endl;
 		std::cout << "width: " << width() << ", "
-                  << "height: " << height() << std::endl;
+		          << "height: " << height() << std::endl;
 		printGlutWindowDim();
 
 		render.init(configPath());
-		render.resize(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
+		render.resize(glutGet(GLUT_WINDOW_WIDTH),
+		              glutGet(GLUT_WINDOW_HEIGHT));
 		
 		render.radius(1e10)
 		      .near(0.1)
