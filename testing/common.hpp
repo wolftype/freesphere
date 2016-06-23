@@ -16,7 +16,7 @@
 
 #include <string>
 #include <unistd.h> // gethostname
-#include <iostream>std::
+#include <iostream>
 
 class State {
 public:
