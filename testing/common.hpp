@@ -2,8 +2,26 @@
 
 #include "allocore/spatial/al_Pose.hpp"
 
+#if defined AL_OSX
+    #include <GLUT/glut.h>
+
+#elif defined AL_LINUX
+    #include <GL/glew.h>
+    #include <GL/glut.h>
+
+#elif defined AL_WINDOWS
+    #include <GL/wglew.h> // wglSwapInterval
+    #include <GL/glut.h>
+#endif
+
 #include <string>
 #include <unistd.h> // gethostname
+#include <iostream>std::
+
+class State {
+public:
+    al::Pose pose;
+};
 
 std::string getHostName() {
     char hostname[256];
@@ -31,7 +49,11 @@ std::string configPath() {
     return "OmniRender/configFiles/projectorConfigurationTemplate.txt";
 }
 
-class State {
-public:
-	al::Pose pose;
-};
+void printGlutWindowDim() {
+    std::cout << "GLUT says..." << std:: endl;
+    std::cout << "win: " << glutGet(GLUT_WINDOW_WIDTH) << ", "
+              << glutGet(GLUT_WINDOW_HEIGHT) << std::endl;
+    std::cout << "screen: " << glutGet(GLUT_SCREEN_WIDTH) << ", "
+              << glutGet(GLUT_SCREEN_HEIGHT) << std::endl;
+    std::cout << ".........." << std::endl;
+}

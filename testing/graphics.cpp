@@ -5,18 +5,6 @@
 
 #include "Cuttlebone/Cuttlebone.hpp"
 
-#if defined AL_OSX
-	#include <GLUT/glut.h>
-
-#elif defined AL_LINUX
-	#include <GL/glew.h>
-	#include <GL/glut.h>
-
-#elif defined AL_WINDOWS
-	#include <GL/wglew.h> // wglSwapInterval
-	#include <GL/glut.h>
-#endif
-
 #include <iostream>
 
 using namespace al;
@@ -31,17 +19,18 @@ public:
 	
 	bool setup() {
 		state = new State;
+
 		cout << "host: " << getHostName() << endl;
 		cout << "configPath: " << configPath() << endl;
 
+		std::cout << "window class says," << std::endl;
+		std::cout << "width: " << width() << ", "
+                  << "height: " << height() << std::endl;
+		printGlutWindowDim();
+
 		render.init(configPath());
 		render.resize(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
-		cout << "width: " << width() << ", "
-		     << "height: " << height() << endl;
-		cout << "glut win width: " << glutGet(GLUT_WINDOW_WIDTH) << ", "
-		     << "glut win height: " << glutGet(GLUT_WINDOW_HEIGHT) << endl;
-		cout << "glut screen width: " << glutGet(GLUT_SCREEN_WIDTH) << ", "
-		     << "glut screen height: " << glutGet(GLUT_SCREEN_HEIGHT) << endl;
+		
 		render.radius(1e10)
 		      .near(0.1)
 		      .far(1000)
@@ -64,7 +53,6 @@ public:
 	void onDraw(Graphics& g) {
 		// send modelview and projection matrix to gpu
 		g.projection(Matrix4d::identity());
-		g.modelView(Matrix4d::identity());
 		Vec3d ux, uy, uz;
 		pose.unitVectors(ux, uy, uz);
 		g.pushMatrix(g.MODELVIEW);

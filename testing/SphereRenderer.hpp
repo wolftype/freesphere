@@ -120,9 +120,9 @@ inline void SphereRenderer::initOmni(std::string path) {
 }
 
 inline void SphereRenderer::initWindow(const Window::Dim& dims,
-                                                   const std::string title,
-                                                   double fps,
-                                                   Window::DisplayMode mode) {
+                                       const std::string title,
+                                       double fps,
+                                       Window::DisplayMode mode) {
   Window::dimensions(dims);
   Window::title(title);
   Window::fps(fps);
@@ -132,17 +132,17 @@ inline void SphereRenderer::initWindow(const Window::Dim& dims,
 inline bool SphereRenderer::onCreate() {
   mOmni.onCreate();
 
-  Shader vert, frag;
-  vert.source(OmniStereo::glsl() + vertexCode(), Shader::VERTEX).compile();
-  vert.printLog();
-  frag.source(fragmentCode(), Shader::FRAGMENT).compile();
-  frag.printLog();
-  mShader.attach(vert).attach(frag).link();
-  mShader.printLog();
-  mShader.begin();
-  mShader.uniform("lighting", 0.0);
-  mShader.uniform("texture", 0.0);
-  mShader.end();
+  // Shader vert, frag;
+  // vert.source(OmniStereo::glsl() + vertexCode(), Shader::VERTEX).compile();
+  // vert.printLog();
+  // frag.source(fragmentCode(), Shader::FRAGMENT).compile();
+  // frag.printLog();
+  // mShader.attach(vert).attach(frag).link();
+  // mShader.printLog();
+  // mShader.begin();
+  // mShader.uniform("lighting", 0.0);
+  // mShader.uniform("texture", 0.0);
+  // mShader.end();
 
   return true;
 }
