@@ -1,3 +1,4 @@
+#include <unistd.h>
 #include "allocore/io/al_App.hpp"
 
 #include "omRender.hpp"
@@ -17,11 +18,13 @@ struct MyApp : public App {
   MyApp(){
     /// User MUST set window buffer to support Active stereo
     /// This isn't necessary for sequential, anaglyph, etc
+
+
     initWindow( Window::Dim(600,400),
                 "Freesphere 1.0",
                 60,
-                // Window::DEFAULT_BUF);
-                Window::DEFAULT_BUF | Window::STEREO_BUF);
+                 Window::DEFAULT_BUF);
+                //Window::DEFAULT_BUF | Window::STEREO_BUF);
 
     std::cout << "windows().size() (contructor): " << windows().size() << std::endl;
 
@@ -68,15 +71,6 @@ struct MyApp : public App {
     call_count++;
     // initialize om::render "tmp" doesn't get used!
 
-//      static bool bFirstTime = true;
-//
-//      if (bFirstTime){
-//        bFirstTime = false;
-//      }
-//      else {
-//        return;
-//      }
-
     // Determine hostname:
        char hostname[1000];
        gethostname(hostname, 1000);
@@ -96,14 +90,13 @@ struct MyApp : public App {
           .far(1000)
           .eyeSep(.1)
           .stereo(1); //stereo mode
-/*
+
     /// If active stereo flag is found in config file, set each window buffer type to stereo
     if (render.config.mProjector[0].active) {
       for (auto& i : windows()) {
         i->displayMode(i->displayMode() | Window::STEREO_BUF);
       }
     }
-
     // Basic shapes in the middle
     addTetrahedron(meshPlatonic[0]);
     addCube(meshPlatonic[1]);
@@ -121,7 +114,7 @@ struct MyApp : public App {
         if (i == 2) meshPlatonic[i].color(0.0, 0.0, 1.0);
       }
     }
-
+/*
     // Bunch of shapes all over
     // scatterShapes(shapesVBO);
     // shapesVBO.print();
