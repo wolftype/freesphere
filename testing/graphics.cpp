@@ -15,7 +15,7 @@ public:
 	State* state;
 	om::Render render;
 	Mesh meshPlatonic[3];
-	
+
 	bool setup() {
 		state = new State;
 
@@ -30,12 +30,10 @@ public:
 		render.init(configPath());
 		render.resize(glutGet(GLUT_WINDOW_WIDTH),
 		              glutGet(GLUT_WINDOW_HEIGHT));
-		
+
 		render.radius(1e10)
 		      .near(0.1)
-		      .far(1000)
-		      .eyeSep(.1)
-		      .stereo(1);
+		      .far(1000);
 
 		addTetrahedron(meshPlatonic[0]);
 		addCube(meshPlatonic[1]);
@@ -61,19 +59,19 @@ public:
 		// begin om
 		render.begin();
 		for (int i = 0; i < render.isStereo() + 1; i++) {
-			float parallax = render.mEyeSep * (i - 0.5);
+			float parallax = render.eyeSep() * (i - 0.5);
 			for (int j = 0; j < 6; j++) {
 				glFramebufferTexture2D(GL_FRAMEBUFFER,
 				                       GL_COLOR_ATTACHMENT0,
 				                       GL_TEXTURE_CUBE_MAP_POSITIVE_X+j,
 				                       render.cubeMap[i].id(), 0);
-				glClearColor(1.0, 0.0, 0.0, 1.0);
+				glClearColor(.2, 0.2, 0.2, 1.0);
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 				render.captureShader.begin();
 
 				render.captureShader.uniform1i("omni_face", j);
-				render.captureShader.uniform1f("omni_eye", parallax);
+				render.captureShader.uniform1f("omni_eyeSep", parallax);
 				render.captureShader.uniform1f("lighting", 0.0);
 				render.captureShader.uniform1f("texture", 0.0);
 

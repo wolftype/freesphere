@@ -83,13 +83,13 @@ struct MyApp : public App {
         render.init(cf);
        } else {
         render.init("OmniRender/configFiles/projectorConfigurationTemplate.txt");
+        render.stereoMode( om::Stereo::ANAGLYPH );
        }
        // render.resize(600, 400);
        render.radius(1e10)
           .near(0.1)
           .far(1000)
-          .eyeSep(.1)
-          .stereo(1); //stereo mode
+          .eyeSep(.1);
 
     /// If active stereo flag is found in config file, set each window buffer type to stereo
     if (render.config.mProjector[0].active) {
@@ -109,12 +109,12 @@ struct MyApp : public App {
       if (i == 2) xfm.translate(Vec3f(2, 0, 0));
       meshPlatonic[i].transform(xfm);
       for (int j = 0; j < meshPlatonic[i].vertices().size(); j++){
-        if (i == 0) meshPlatonic[i].color(1.0, 0.0, 0.0);
-        if (i == 1) meshPlatonic[i].color(0.0, 1.0, 0.0);
-        if (i == 2) meshPlatonic[i].color(0.0, 0.0, 1.0);
+        if (i == 0) meshPlatonic[i].color(1.0, 0.0, 0.5);
+        if (i == 1) meshPlatonic[i].color(.5, 1.0, 0.5);
+        if (i == 2) meshPlatonic[i].color(0.5, 0.0, 1.0);
       }
     }
-    
+
     /*
     // OR... Bunch of shapes all over
     // scatterShapes(shapesVBO);
@@ -134,12 +134,12 @@ struct MyApp : public App {
                                render.cubeMap[i].id(), 0);
         glClearColor(0.0, 0.0, 0.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        float parallax = render.mEyeSep * (i - 0.5 * render.isStereo());
+        float eyeSep = render.eyeSep() * (i - 0.5 * render.isStereo());
 
         /* USER CODE STARTS HERE */
         render.captureShader.begin(); {
           render.captureShader.uniform1i("omni_face", j);
-          render.captureShader.uniform1f("omni_eye", parallax);
+          render.captureShader.uniform1f("omni_eyeSep", eyeSep);
           render.captureShader.uniform1f("lighting", 0.0);
           render.captureShader.uniform1f("texture", 0.0);
           for (int i=0; i<3; i++) g.draw(meshPlatonic[i]);
@@ -160,7 +160,7 @@ struct MyApp : public App {
     render.clearColor(0.0, 0.0, 0.0, 1.0)
           .lighting(0.0)
           .texture(0.0);
-    
+
     render.beginDefault();
 
     for (int i = 0; i < render.isStereo() + 1; i++) {

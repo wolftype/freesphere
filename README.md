@@ -6,6 +6,12 @@ AlloSystem + OmniRender tests
   cd freesphere
   git submodule update
   git submodule init
+
+get an invite to the arg calibration data folder!!!  
+download proj9.bin and proj10.bin from box
+make a calibration-current folder in freesphere repo
+add the .bin files to calibration-current folder
+
   ./run.sh src/main.cpp
 
 
