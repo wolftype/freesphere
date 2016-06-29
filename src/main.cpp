@@ -114,8 +114,9 @@ struct MyApp : public App {
         if (i == 2) meshPlatonic[i].color(0.0, 0.0, 1.0);
       }
     }
-/*
-    // Bunch of shapes all over
+    
+    /*
+    // OR... Bunch of shapes all over
     // scatterShapes(shapesVBO);
     // shapesVBO.print();
     */
@@ -127,6 +128,7 @@ struct MyApp : public App {
     render.begin();
     for (int i = 0; i < render.isStereo() + 1; i++) {
       for (int j = 0; j < 6; j++){
+
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                                GL_TEXTURE_CUBE_MAP_POSITIVE_X+j,
                                render.cubeMap[i].id(), 0);
@@ -158,11 +160,12 @@ struct MyApp : public App {
     render.clearColor(0.0, 0.0, 0.0, 1.0)
           .lighting(0.0)
           .texture(0.0);
-
+    
     render.beginDefault();
+
     for (int i = 0; i < render.isStereo() + 1; i++) {
       for (int j = 0; j < 6; j++) {
-        render.faceBeginDefault(0, j);
+        render.faceBeginDefault(i, j);
 
         /* USER CODE STARTS HERE */
         for (int i=0; i<3; i++) g.draw(meshPlatonic[i]);
@@ -172,7 +175,7 @@ struct MyApp : public App {
         render.faceEndDefault();
       }
     }
-    render.endDefault();
+    render.end();
 
   }
 
