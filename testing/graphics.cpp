@@ -39,6 +39,12 @@ public:
 		addCube(meshPlatonic[1]);
 		addSphere(meshPlatonic[2]);
 
+		cout << mOmni.projection(0).warp().numComponents() << endl;
+		cout << mOmni.projection(0).warp().width() << endl;
+		cout << mOmni.projection(0).warp().height() << endl;
+
+		render.warptex[0].update(mOmni.projection(0).warp().data());
+		render.warptex[1].update(mOmni.projection(1).warp().data());
 		return false;
 	}
 
