@@ -31,7 +31,7 @@ public:
 		render.resize(glutGet(GLUT_WINDOW_WIDTH),
 		              glutGet(GLUT_WINDOW_HEIGHT));
 
-		render.radius(1e10)
+		render.radius(5)
 		      .near(0.1)
 		      .far(1000);
 
@@ -43,8 +43,11 @@ public:
 		cout << mOmni.projection(0).warp().width() << endl;
 		cout << mOmni.projection(0).warp().height() << endl;
 
-		render.warptex[0].update(mOmni.projection(0).warp().data());
-		render.warptex[1].update(mOmni.projection(1).warp().data());
+		//render.warptex[0].update(mOmni.projection(0).warp().data());
+		//render.warptex[1].update(mOmni.projection(1).warp().data());
+
+		//render.warptex[0].update(render.config.mProjector[0].data);
+		//render.warptex[1].update(render.config.mProjector[1].data);
 		return false;
 	}
 
@@ -86,7 +89,7 @@ public:
 						for (int k = 0; k < 10; k++) {
 							g.pushMatrix();
 							g.translate(i * 10, j * 3, k * 3);
-							glColor4f(1.0, 1.0, 1.0, 1.0);
+							glColor4f((float)k/20.f + 0.5f, (float)j/20.f + 0.5f, (float)i/6.f + 0.5f, 1.0);
 							g.draw(meshPlatonic[i]);
 							g.popMatrix();
 						}
