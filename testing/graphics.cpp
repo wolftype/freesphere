@@ -27,27 +27,18 @@ public:
 		          << "height: " << height() << std::endl;
 		printGlutWindowDim();
 
-		render.init(configPath());
-		render.resize(glutGet(GLUT_WINDOW_WIDTH),
-		              glutGet(GLUT_WINDOW_HEIGHT));
+		//Settings object
+		om::Settings rndrSettings;
+		rndrSettings.configPath = configPath();
+		rndrSettings.winW = glutGet(GLUT_WINDOW_WIDTH);
+		rndrSettings.winH = glutGet(GLUT_WINDOW_HEIGHT);
 
-		render.radius(5)
-		      .near(0.1)
-		      .far(1000);
+		render.init(rndrSettings);
 
 		addTetrahedron(meshPlatonic[0]);
 		addCube(meshPlatonic[1]);
 		addSphere(meshPlatonic[2]);
 
-		cout << mOmni.projection(0).warp().numComponents() << endl;
-		cout << mOmni.projection(0).warp().width() << endl;
-		cout << mOmni.projection(0).warp().height() << endl;
-
-		//render.warptex[0].update(mOmni.projection(0).warp().data());
-		//render.warptex[1].update(mOmni.projection(1).warp().data());
-
-		//render.warptex[0].update(render.config.mProjector[0].data);
-		//render.warptex[1].update(render.config.mProjector[1].data);
 		return false;
 	}
 
@@ -65,7 +56,7 @@ public:
 		g.pushMatrix(g.MODELVIEW);
 		g.loadMatrix(Matrix4d::lookAt(ux, uy, uz, pose.pos()));
 
-		// begin om
+		// begin om capture
 		render.begin();
 		for (int i = 0; i < render.isStereo() + 1; i++) {
 			float parallax = render.eyeSep() * (i - 0.5);
