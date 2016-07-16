@@ -76,11 +76,11 @@ public:
 				render.captureShader.uniform1f("texture", 0.0);
 
 				for (int i = 0; i < 3; i++) {
-					for (int j = 0; j < 10; j++) {
+					for (int jj = 0; jj < 10; jj++) {
 						for (int k = 0; k < 10; k++) {
 							g.pushMatrix();
-							g.translate(i * 10, j * 3, k * 3);
-							glColor4f((float)k/20.f + 0.5f, (float)j/20.f + 0.5f, (float)i/6.f + 0.5f, 1.0);
+							g.translate(i * 10, jj * 3, k * 3);
+							glColor4f((float)k/20.f + 0.5f, (float)jj/20.f + 0.5f, (float)i/6.f + 0.5f, 1.0);
 							g.draw(meshPlatonic[i]);
 							g.popMatrix();
 						}
